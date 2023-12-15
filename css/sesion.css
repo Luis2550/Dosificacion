@@ -1,0 +1,59 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+}
+
+.login-container {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    border-radius: 8px;
+    width: 100%; /* Añadido para asegurar que abarque el contenedor */
+    max-width: 400px; /* Cambiado para evitar que sea demasiado ancho en pantallas grandes */
+}
+
+.login-form {
+    max-width: 100%; /* Añadido para asegurar que abarque el contenedor */
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 20px; /* Aumentado el espacio entre los elementos */
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px; /* Reducido el espacio entre las etiquetas y los campos de entrada */
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Añadido para incluir el relleno en el ancho total */
+}
+
+button {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 12px 15px; /* Aumentado el relleno para un botón más grande */
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}

@@ -1,0 +1,79 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #993434;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1em;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cabecera-derecha {
+    display: flex;
+    align-items: center;
+}
+
+.info-profesor {
+    margin-right: 50px;
+}
+
+.opciones {
+    color: #fff;
+}
+
+#menu-opciones {
+    padding: 5px;
+    margin-left: 10px;
+}
+
+section {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.curso {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    padding: 20px;
+    width: 30%;
+    box-sizing: border-box;
+    transition: transform 0.3s ease-in-out;
+}
+
+.curso:hover {
+    transform: scale(1.05);
+}
+
+.botones{
+    text-align: center;
+}
+
+.btn-planificacion {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-planificacion:hover {
+    background-color: #2aa134;
+}
