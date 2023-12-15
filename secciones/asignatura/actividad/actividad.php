@@ -140,7 +140,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <th>Actividad</th>
                 <th>Duración</th>
                 <th>Descripción</th>
-                
                 <th>Componente</th>
                 <th>Opciones</th> <!-- Nueva columna -->
             </tr>
@@ -148,11 +147,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <tbody>
             <?php while ($actividad = mysqli_fetch_assoc($resultActividades)): ?>
                 <tr>
-                    <td><?php echo $actividad['nombre_unidad_tema']; ?></td>
+                    <td class="unit-cell"><?php echo $actividad['nombre_unidad_tema']; ?></td>
                     <td><?php echo $actividad['actividad']; ?></td>
                     <td><?php echo $actividad['duracion_actividad']; ?></td>
                     <td><?php echo $actividad['descripcion_actividad']; ?></td>
-                    
                     <td><?php echo $actividad['componente']; ?></td>
                     <td class="actions-column">
                         <a href="editar.php?id=<?php echo $actividad['id_actividad']; ?>&codigo=<?php echo $codigoAsignatura; ?>" class="btn-editar">Editar</a>

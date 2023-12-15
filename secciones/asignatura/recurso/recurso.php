@@ -134,7 +134,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <table border="1">
         <thead>
             <tr>
-                <th>Unidad/Tema</th>
+                <th>Unidad</th>
                 <th>Actividad</th>
                 <th>Recurso</th>
                 <th>Duración del Recurso</th>

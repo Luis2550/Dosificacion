@@ -146,3 +146,10 @@ select:focus {
     padding: 10px 15px;
     background-color: rgba(33, 150, 243, 0.7); ;
 }
+
+.unit-cell {
+    max-width: 150px; /* Puedes ajustar el ancho máximo según tus necesidades */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

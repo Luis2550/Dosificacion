@@ -127,16 +127,23 @@ mysqli_close($conexion);
                 <th>Nombre</th>
                 <th>Tema</th>
                 <th>Fecha</th>
+                <th>Dia</th>
                 <th class="actions-column">Acciones</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($unidades as $unidad): ?>
+      
+            <?php
+            // Establecer el idioma a español
+            setlocale(LC_TIME, 'es_ES.UTF-8', 'es_ES', 'esp');
+
+            foreach ($unidades as $unidad):
+                ?>
                 <tr>
-                    
                     <td><?php echo $unidad['nombre_unidad_tema']; ?></td>
                     <td><?php echo $unidad['tema']; ?></td>
                     <td><?php echo $unidad['fecha']; ?></td>
+                    <td><?php echo utf8_encode(ucfirst(strftime('%A', strtotime($unidad['fecha'])))); ?></td>
                     <td class="actions-column">
                         <a href="editar.php?id=<?php echo $unidad['id_unidad_tema']; ?>&codigo=<?php echo $codigoAsignatura; ?>" class="btn-editar">Editar</a>
                         <a href="?accion=borrar&id=<?php echo $unidad['id_unidad_tema']; ?>&codigo=<?php echo $codigoAsignatura; ?>" class="btn-borrar">Borrar</a>

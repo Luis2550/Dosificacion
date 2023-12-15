@@ -1,6 +1,6 @@
 <?php
     session_start();
-    $urlBase = "http://localhost/plantilla/";
+    $urlBase = "http://localhost/Dosificacion/";
 
     if(!isset($_SESSION['usuario'])){
         header("location:".$urlBase."login.php");
