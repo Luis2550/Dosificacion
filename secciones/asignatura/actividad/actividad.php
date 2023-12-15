@@ -49,12 +49,14 @@ if (isset($_GET['codigo'])) {
     $codigoAsignatura = $_GET['codigo'];
 
     // Consulta para obtener las actividades de la asignatura
-    $queryActividades = "SELECT actividad.id_actividad, actividad.actividad, actividad.duracion_actividad, actividad.descripcion_actividad, unidad_tema.nombre_unidad_tema, componente_aprendizaje.componente
-                        FROM actividad
-                        INNER JOIN unidad_tema ON actividad.id_unidad_tema = unidad_tema.id_unidad_tema
-                        INNER JOIN componente_aprendizaje ON actividad.id_componente = componente_aprendizaje.id_componente
-                        WHERE unidad_tema.codigo_asignatura = '$codigoAsignatura'";
-    $resultActividades = mysqli_query($conexion, $queryActividades);
+    // Consulta para obtener las actividades de la asignatura con orden por unidad
+        $queryActividades = "SELECT actividad.id_actividad, actividad.actividad, actividad.duracion_actividad, actividad.descripcion_actividad, unidad_tema.nombre_unidad_tema, componente_aprendizaje.componente
+        FROM actividad
+        INNER JOIN unidad_tema ON actividad.id_unidad_tema = unidad_tema.id_unidad_tema
+        INNER JOIN componente_aprendizaje ON actividad.id_componente = componente_aprendizaje.id_componente
+        WHERE unidad_tema.codigo_asignatura = '$codigoAsignatura'
+        ORDER BY unidad_tema.nombre_unidad_tema";
+        $resultActividades = mysqli_query($conexion, $queryActividades);
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -163,6 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php else: ?>
     <p>No hay actividades disponibles para esta asignatura.</p>
 <?php endif; ?>
+
 
 </body>
 </html>

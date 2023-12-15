@@ -23,7 +23,7 @@ $asignaturas = $resultado->fetch_all(MYSQLI_ASSOC);
 
             <div class="botones">
                 <button class="btn-planificacion" onclick="window.location.href='<?php echo $urlBase; ?>secciones/asignatura/index.php?codigo=<?php echo $asignatura['codigo_asignatura']; ?>'">Planificar el Curso</button>
-                <button class="btn-planificacion" onclick="window.location.href='<?php echo $urlBase; ?>asignatura/ver_planificacion.php?codigo=<?php echo $asignatura['codigo_asignatura']; ?>'">Ver Planificación</button>
+                <button class="btn-planificacion" onclick="window.location.href='<?php echo $urlBase; ?>secciones/asignatura/ver_planificacion.php?codigo=<?php echo $asignatura['codigo_asignatura']; ?>'">Ver Planificación</button>
             </div>
             
         </div>

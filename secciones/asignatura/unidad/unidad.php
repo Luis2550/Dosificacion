@@ -52,14 +52,16 @@ if (isset($_GET['codigo'])) {
     $codigoAsignatura = $_GET['codigo'];
 
     // Consulta para obtener las unidades de temas de la asignatura
-    $query = "SELECT * FROM unidad_tema WHERE codigo_asignatura = '$codigoAsignatura'";
-    $result = mysqli_query($conexion, $query);
+    // Consulta para obtener las unidades de temas de la asignatura con orden por nombre
+        $query = "SELECT * FROM unidad_tema WHERE codigo_asignatura = '$codigoAsignatura' ORDER BY nombre_unidad_tema";
+        $result = mysqli_query($conexion, $query);
 
-    // Verifica si se obtuvieron resultados
-    if ($result) {
-        // Obtiene todas las filas de resultados como un array asociativo
-        $unidades = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    }
+        // Verifica si se obtuvieron resultados
+        if ($result) {
+            // Obtiene todas las filas de resultados como un array asociativo
+            $unidades = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        }
+
 
     // Procesar acción de borrar si se ha proporcionado 'accion' y 'id' en la URL
     if (isset($_GET['accion']) && $_GET['accion'] == 'borrar' && isset($_GET['id'])) {
@@ -127,7 +129,7 @@ mysqli_close($conexion);
                 <th>Nombre</th>
                 <th>Tema</th>
                 <th>Fecha</th>
-                <th>Dia</th>
+                <th>Día</th>
                 <th class="actions-column">Acciones</th>
             </tr>
         </thead>
