@@ -10,8 +10,11 @@ if (isset($_GET['codigo'])) {
     $codigoAsignatura = $_GET['codigo'];
 
     // Consulta para obtener los nombres de las unidades específicas de la asignatura
-    $queryUnidades = "SELECT id_unidad_tema, nombre_unidad_tema FROM unidad_tema WHERE codigo_asignatura = '$codigoAsignatura'";
-    $resultUnidades = mysqli_query($conexion, $queryUnidades);
+    // Consulta para obtener los nombres de las unidades y temas específicos de la asignatura
+// Consulta para obtener los nombres de las unidades y temas específicos de la asignatura
+$queryUnidades = "SELECT DISTINCT nombre_unidad_tema FROM unidad_tema WHERE codigo_asignatura = '$codigoAsignatura'";
+$resultUnidades = mysqli_query($conexion, $queryUnidades);
+
 
     // Consulta para obtener los nombres de los componentes
     $queryComponentes = "SELECT id_componente, componente FROM componente_aprendizaje";
@@ -50,14 +53,36 @@ if (isset($_GET['codigo'])) {
 
     // Consulta para obtener las actividades de la asignatura
     // Consulta para obtener las actividades de la asignatura con orden por unidad
-        $queryActividades = "SELECT actividad.id_actividad, actividad.actividad, actividad.duracion_actividad, actividad.descripcion_actividad, unidad_tema.nombre_unidad_tema, componente_aprendizaje.componente
+        // Consulta para obtener las actividades de la asignatura
+        $queryActividades = "SELECT actividad.id_actividad, actividad.actividad, actividad.duracion_actividad, actividad.descripcion_actividad, unidad_tema.nombre_unidad_tema, unidad_tema.tema, componente_aprendizaje.componente
         FROM actividad
         INNER JOIN unidad_tema ON actividad.id_unidad_tema = unidad_tema.id_unidad_tema
         INNER JOIN componente_aprendizaje ON actividad.id_componente = componente_aprendizaje.id_componente
         WHERE unidad_tema.codigo_asignatura = '$codigoAsignatura'
         ORDER BY unidad_tema.nombre_unidad_tema";
         $resultActividades = mysqli_query($conexion, $queryActividades);
+        
+
 }
+
+function obtenerConteoUnidad($nombreUnidad) {
+    global $conexion, $codigoAsignatura;
+
+    $queryConteo = "SELECT COUNT(*) AS conteo FROM actividad
+                    INNER JOIN unidad_tema ON actividad.id_unidad_tema = unidad_tema.id_unidad_tema
+                    WHERE unidad_tema.codigo_asignatura = '$codigoAsignatura'
+                    AND unidad_tema.nombre_unidad_tema = '$nombreUnidad'";
+
+    $resultConteo = mysqli_query($conexion, $queryConteo);
+
+    if ($resultConteo) {
+        $row = mysqli_fetch_assoc($resultConteo);
+        return $row['conteo'];
+    } else {
+        return 1; // Devolver 1 por defecto si hay un error en la consulta
+    }
+}
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recibir datos del formulario
@@ -114,11 +139,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="select-container">
     <label for="id_unidad_tema">Unidad/Tema:</label>
     <select name="id_unidad_tema" required>
-        <?php while ($unidad = mysqli_fetch_assoc($resultUnidades)): ?>
-            <option value="<?php echo $unidad['id_unidad_tema']; ?>"><?php echo $unidad['nombre_unidad_tema']; ?></option>
+        <?php 
+        while ($unidad = mysqli_fetch_assoc($resultUnidades)): 
+        ?>
+            <option disabled><?php echo $unidad['nombre_unidad_tema']; ?></option>
+            <?php
+            // Consulta para obtener los temas asociados a la unidad actual
+            $queryTemas = "SELECT id_unidad_tema, tema FROM unidad_tema WHERE nombre_unidad_tema = '{$unidad['nombre_unidad_tema']}' AND codigo_asignatura = '$codigoAsignatura'";
+            $resultTemas = mysqli_query($conexion, $queryTemas);
+
+            while ($tema = mysqli_fetch_assoc($resultTemas)): ?>
+                <option value="<?php echo $tema['id_unidad_tema']; ?>"><?php echo $tema['tema']; ?></option>
+            <?php endwhile; ?>
         <?php endwhile; ?>
     </select>
 </div>
+
 
 <div class="select-container">
     <label for="id_componente">Componente:</label>
@@ -136,32 +172,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <?php if (isset($resultActividades) && mysqli_num_rows($resultActividades) > 0): ?>
     <table border="1">
-        <thead>
+    <thead>
+        <tr>
+            <th>Unidad</th>
+            <th>Tema</th>
+            <th>Actividad</th>
+            <th>Duración</th>
+            <th>Descripción</th>
+            <th>Componente</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        $prevUnidad = null; // Variable para almacenar la unidad anterior
+        while ($actividad = mysqli_fetch_assoc($resultActividades)):
+        ?>
             <tr>
-                <th>Unidad</th>
-                <th>Actividad</th>
-                <th>Duración</th>
-                <th>Descripción</th>
-                <th>Componente</th>
-                <th>Opciones</th> <!-- Nueva columna -->
-            </tr>
-        </thead>
-        <tbody>
-            <?php while ($actividad = mysqli_fetch_assoc($resultActividades)): ?>
-                <tr>
-                    <td class="unit-cell"><?php echo $actividad['nombre_unidad_tema']; ?></td>
-                    <td><?php echo $actividad['actividad']; ?></td>
-                    <td><?php echo $actividad['duracion_actividad']; ?></td>
-                    <td><?php echo $actividad['descripcion_actividad']; ?></td>
-                    <td><?php echo $actividad['componente']; ?></td>
-                    <td class="actions-column">
-                        <a href="editar.php?id=<?php echo $actividad['id_actividad']; ?>&codigo=<?php echo $codigoAsignatura; ?>" class="btn-editar">Editar</a>
-                        <a href="?accion=borrar&id=<?php echo $actividad['id_actividad']; ?>&codigo=<?php echo $codigoAsignatura; ?>" class="btn-borrar">Borrar</a>
+                <?php
+                // Comprobar si la unidad es diferente a la anterior
+                if ($actividad['nombre_unidad_tema'] != $prevUnidad):
+                ?>
+                    <td class="unit-cell" rowspan="<?php echo obtenerConteoUnidad($actividad['nombre_unidad_tema']); ?>">
+                        <?php echo $actividad['nombre_unidad_tema']; ?>
                     </td>
-                </tr>
-            <?php endwhile; ?>
-        </tbody>
-    </table>
+                <?php
+                endif;
+                ?>
+                <td><?php echo $actividad['tema']; ?></td>
+                <td><?php echo $actividad['actividad']; ?></td>
+                <td><?php echo $actividad['duracion_actividad']; ?></td>
+                <td><?php echo $actividad['descripcion_actividad']; ?></td>
+                <td><?php echo $actividad['componente']; ?></td>
+                <td class="actions-column">
+                    <a href="editar.php?id=<?php echo $actividad['id_actividad']; ?>&codigo=<?php echo $codigoAsignatura; ?>" class="btn-editar">Editar</a>
+                    <a href="?accion=borrar&id=<?php echo $actividad['id_actividad']; ?>&codigo=<?php echo $codigoAsignatura; ?>" class="btn-borrar">Borrar</a>
+                </td>
+            </tr>
+            <?php
+            // Almacenar la unidad actual para comparar con la siguiente iteración
+            $prevUnidad = $actividad['nombre_unidad_tema'];
+        endwhile;
+        ?>
+    </tbody>
+</table>
+
+
 <?php else: ?>
     <p>No hay actividades disponibles para esta asignatura.</p>
 <?php endif; ?>
