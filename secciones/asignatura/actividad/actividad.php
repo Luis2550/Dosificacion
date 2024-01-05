@@ -9,12 +9,9 @@ if (isset($_GET['codigo'])) {
     // Obtiene el valor del parámetro 'codigo'
     $codigoAsignatura = $_GET['codigo'];
 
-    // Consulta para obtener los nombres de las unidades específicas de la asignatura
     // Consulta para obtener los nombres de las unidades y temas específicos de la asignatura
-// Consulta para obtener los nombres de las unidades y temas específicos de la asignatura
-$queryUnidades = "SELECT DISTINCT nombre_unidad_tema FROM unidad_tema WHERE codigo_asignatura = '$codigoAsignatura'";
-$resultUnidades = mysqli_query($conexion, $queryUnidades);
-
+    $queryUnidades = "SELECT DISTINCT nombre_unidad_tema FROM unidad_tema WHERE codigo_asignatura = '$codigoAsignatura'";
+    $resultUnidades = mysqli_query($conexion, $queryUnidades);
 
     // Consulta para obtener los nombres de los componentes
     $queryComponentes = "SELECT id_componente, componente FROM componente_aprendizaje";
@@ -52,17 +49,13 @@ if (isset($_GET['codigo'])) {
     $codigoAsignatura = $_GET['codigo'];
 
     // Consulta para obtener las actividades de la asignatura
-    // Consulta para obtener las actividades de la asignatura con orden por unidad
-        // Consulta para obtener las actividades de la asignatura
-        $queryActividades = "SELECT actividad.id_actividad, actividad.actividad, actividad.duracion_actividad, actividad.descripcion_actividad, unidad_tema.nombre_unidad_tema, unidad_tema.tema, componente_aprendizaje.componente
+    $queryActividades = "SELECT actividad.id_actividad, actividad.actividad, actividad.duracion_actividad, actividad.descripcion_actividad, unidad_tema.nombre_unidad_tema, unidad_tema.tema, componente_aprendizaje.componente, actividad.recurso
         FROM actividad
         INNER JOIN unidad_tema ON actividad.id_unidad_tema = unidad_tema.id_unidad_tema
         INNER JOIN componente_aprendizaje ON actividad.id_componente = componente_aprendizaje.id_componente
         WHERE unidad_tema.codigo_asignatura = '$codigoAsignatura'
         ORDER BY unidad_tema.nombre_unidad_tema";
-        $resultActividades = mysqli_query($conexion, $queryActividades);
-        
-
+    $resultActividades = mysqli_query($conexion, $queryActividades);
 }
 
 function obtenerConteoUnidad($nombreUnidad) {
@@ -83,7 +76,6 @@ function obtenerConteoUnidad($nombreUnidad) {
     }
 }
 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recibir datos del formulario
     $actividad = $_POST['actividad'];
@@ -91,10 +83,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $descripcion_actividad = $_POST['descripcion_actividad'];
     $id_unidad_tema = $_POST['id_unidad_tema'];
     $id_componente = $_POST['id_componente'];
+    $recurso = $_POST['descripcion_recurso']; // Nuevo campo
 
     // Consulta SQL para insertar los datos en la tabla actividad
-    $query = "INSERT INTO actividad (actividad, duracion_actividad, descripcion_actividad, id_unidad_tema, id_componente) 
-              VALUES ('$actividad', '$duracion_actividad', '$descripcion_actividad', '$id_unidad_tema', '$id_componente')";
+    $query = "INSERT INTO actividad (actividad, duracion_actividad, descripcion_actividad, id_unidad_tema, id_componente, recurso) 
+              VALUES ('$actividad', '$duracion_actividad', '$descripcion_actividad', '$id_unidad_tema', '$id_componente', '$recurso')";
               
     // Ejecutar la consulta
     $result = mysqli_query($conexion, $query);
@@ -164,6 +157,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php endwhile; ?>
     </select>
 </div>
+
+<label for="descripcion_recurso">Tipo de Recurso:</label>
+    <select name="descripcion_recurso" required>
+        <option value="Videos educativos">Videos educativos</option>
+        <option value="PDFs">PDFs</option>
+        <option value="Youtube">Youtube</option>
+        <option value="Documentos Word">Documentos Word</option>
+        <option value="Presentaciones en PowerPoint">Presentaciones en PowerPoint</option>
+        <option value="Teams/Zoom">Teams/Zoom</option>
+    </select><br>
+
+    
     <br>
     <input type="submit" value="Guardar">
 </form>
@@ -180,6 +185,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <th>Duración</th>
             <th>Descripción</th>
             <th>Componente</th>
+            <th>Recurso</th>
             <th>Opciones</th>
         </tr>
     </thead>
@@ -204,6 +210,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <td><?php echo $actividad['duracion_actividad']; ?></td>
                 <td><?php echo $actividad['descripcion_actividad']; ?></td>
                 <td><?php echo $actividad['componente']; ?></td>
+                <td><?php echo $actividad['recurso']; ?></td>
                 <td class="actions-column">
                     <a href="editar.php?id=<?php echo $actividad['id_actividad']; ?>&codigo=<?php echo $codigoAsignatura; ?>" class="btn-editar">Editar</a>
                     <a href="?accion=borrar&id=<?php echo $actividad['id_actividad']; ?>&codigo=<?php echo $codigoAsignatura; ?>" class="btn-borrar">Borrar</a>

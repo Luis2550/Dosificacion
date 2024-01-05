@@ -9,7 +9,7 @@ $idActividadEditar = '';
 if (isset($_GET['codigo'])) {
     // Obtiene el valor del parámetro 'codigo'
     $codigoAsignatura = $_GET['codigo'];
-    
+
     // Verifica si se ha proporcionado el parámetro 'id' en la URL
     if (isset($_GET['id'])) {
         // Obtiene el valor del parámetro 'id'
@@ -53,12 +53,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $descripcion_actividad = $_POST['descripcion_actividad'];
     $id_unidad_tema = $_POST['id_unidad_tema'];
     $id_componente = $_POST['id_componente'];
+    $recurso = $_POST['descripcion_recurso']; // Nuevo campo
 
     // Consulta SQL para actualizar los datos en la tabla actividad
     $queryActualizar = "UPDATE actividad 
                         SET actividad = '$actividad', duracion_actividad = '$duracion_actividad', 
                         descripcion_actividad = '$descripcion_actividad', id_unidad_tema = '$id_unidad_tema', 
-                        id_componente = '$id_componente' 
+                        id_componente = '$id_componente', recurso = '$recurso' 
                         WHERE id_actividad = '$idActividadEditar'";
     
     // Ejecutar la consulta de actualización
@@ -88,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <h2 class="Title">Editar Actividad</h2>
 <form action="editar.php?codigo=<?php echo $codigoAsignatura; ?>&id=<?php echo $idActividadEditar; ?>" method="post">
-    <!-- Agrega aquí campos adicionales según tus necesidades -->
+    <!-- Campos adicionales según tus necesidades -->
     <label for="actividad">Actividad:</label>
     <input type="text" name="actividad" value="<?php echo $actividadEditar['actividad']; ?>" required><br>
 
@@ -120,6 +121,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php endwhile; ?>
         </select>
     </div>
+
+    <label for="descripcion_recurso">Tipo de Recurso:</label>
+    <select name="descripcion_recurso" required>
+        <option value="Videos educativos" <?php echo ($actividadEditar['recurso'] == 'Videos educativos') ? 'selected' : ''; ?>>Videos educativos</option>
+        <option value="PDFs" <?php echo ($actividadEditar['recurso'] == 'PDFs') ? 'selected' : ''; ?>>PDFs</option>
+        <option value="Youtube" <?php echo ($actividadEditar['recurso'] == 'Youtube') ? 'selected' : ''; ?>>Youtube</option>
+        <option value="Documentos Word" <?php echo ($actividadEditar['recurso'] == 'Documentos Word') ? 'selected' : ''; ?>>Documentos Word</option>
+        <option value="Presentaciones en PowerPoint" <?php echo ($actividadEditar['recurso'] == 'Presentaciones en PowerPoint') ? 'selected' : ''; ?>>Presentaciones en PowerPoint</option>
+        <option value="Teams/Zoom" <?php echo ($actividadEditar['recurso'] == 'Teams/Zoom') ? 'selected' : ''; ?>>Teams/Zoom</option>
+    </select><br>
+
     <br>
     <input type="submit" value="Guardar Cambios">
 </form>

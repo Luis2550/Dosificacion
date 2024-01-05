@@ -24,6 +24,15 @@ mysqli_close($conexion);
 <?php include("../../templates/header.php");?>
 
 <main>
+    <a
+        name=""
+        id=""
+        class="btn btn-primary"
+        href="http://localhost/dosificacion/"
+        role="button"
+        >Regresar</a
+    >
+
     <?php if (isset($asignatura)): ?>
         <h2>Información de la Asignatura</h2>
         <ul>
@@ -41,9 +50,7 @@ mysqli_close($conexion);
     <div class="registro-menu">
         <ul>
             <li><a href="./unidad/unidad.php?codigo=<?php echo $codigoAsignatura; ?>" class="btn-planificacion2">Registrar Unidad</a></li>
-            
             <li><a href="./actividad/actividad.php?codigo=<?php echo $codigoAsignatura; ?>" class="btn-planificacion2">Registrar Actividad</a></li>
-            <li><a href="./recurso/recurso.php?codigo=<?php echo $codigoAsignatura; ?>" class="btn-planificacion2">Registrar Recurso</a></li>
         </ul>
     </div>
 </main>
