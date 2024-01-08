@@ -85,6 +85,8 @@ if (isset($_GET['codigo'])) {
         <tbody>
         <?php
         $prevUnidad = null;
+        $totalMinutosPorComponente = array();
+
         foreach ($data as $row):
             echo '<tr>';
             if ($prevUnidad !== $row['nombre_unidad_tema']) {
@@ -101,10 +103,43 @@ if (isset($_GET['codigo'])) {
             echo '<td>' . $row['componente'] . '</td>';
             echo '</tr>';
             $prevUnidad = $row['nombre_unidad_tema'];
+
+            // Calcular total de minutos por componente
+            if (!isset($totalMinutosPorComponente[$row['componente']])) {
+                $totalMinutosPorComponente[$row['componente']] = 0;
+            }
+            if ($row['duracion_actividad'] !== null) {
+                $totalMinutosPorComponente[$row['componente']] += obtenerMinutos($row['duracion_actividad']);
+            }
         endforeach;
         ?>
         </tbody>
     </table>
+
+    <!-- Cuadro de total de horas por componente -->
+    <h3>Total de horas por componente:</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>Componente</th>
+            <th>Total de Horas</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        foreach ($totalMinutosPorComponente as $componente => $totalMinutosComponente):
+            echo '<tr>';
+            echo '<td>' . $componente . '</td>';
+            echo '<td>' . minutosAFormatoHora($totalMinutosComponente) . '</td>';
+            echo '</tr>';
+        endforeach;
+        ?>
+        </tbody>
+    </table>
+
+    <!-- Cuadro de total de horas -->
+    <h3>Total de horas:</h3>
+    <p><?php echo minutosAFormatoHora(array_sum($totalMinutosPorComponente)); ?></p>
 
 <?php else: ?>
     <p>No hay datos disponibles para mostrar.</p>
@@ -112,3 +147,18 @@ if (isset($_GET['codigo'])) {
 
 </body>
 </html>
+
+<?php
+// Función para convertir duración en formato HH:mm a minutos
+function obtenerMinutos($duracion) {
+    list($horas, $minutos) = explode(':', $duracion);
+    return intval($horas) * 60 + intval($minutos);
+}
+
+// Función para convertir minutos a formato HH:mm
+function minutosAFormatoHora($minutos) {
+    $horas = floor($minutos / 60);
+    $minutosRestantes = $minutos % 60;
+    return sprintf("%02d:%02d", $horas, $minutosRestantes);
+}
+?>
