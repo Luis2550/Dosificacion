@@ -4,6 +4,18 @@ include("../../bd.php");
 if (isset($_GET['codigo'])) {
     $codigoAsignatura = $_GET['codigo'];
 
+    // Asegúrate de escapar las variables correctamente para prevenir SQL injection
+    $codigoAsignatura = mysqli_real_escape_string($conexion, $codigoAsignatura);
+
+    // Obtén las semanas disponibles para la asignatura
+    $semanasQuery = "SELECT DISTINCT semanas FROM unidad_tema WHERE codigo_asignatura = '$codigoAsignatura';";
+    $semanasResult = mysqli_query($conexion, $semanasQuery);
+    $semanas = mysqli_fetch_all($semanasResult, MYSQLI_ASSOC);
+
+    // Verifica si se seleccionó una semana
+    $semanaSeleccionada = isset($_POST['semana']) ? $_POST['semana'] : (isset($semanas[0]['semanas']) ? $semanas[0]['semanas'] : null);
+
+    // Consulta principal
     $query = "
         SELECT 
             ut.nombre_unidad_tema AS nombre_unidad_tema,
@@ -17,7 +29,8 @@ if (isset($_GET['codigo'])) {
         LEFT JOIN actividad a ON ut.id_unidad_tema = a.id_unidad_tema
         LEFT JOIN componente_aprendizaje c ON a.id_componente = c.id_componente
         WHERE ut.codigo_asignatura = '$codigoAsignatura'
-        ORDER BY ut.nombre_unidad_tema, a.actividad;
+        " . ($semanaSeleccionada ? "AND ut.semanas = '$semanaSeleccionada'" : "") . "
+        ORDER BY ut.semanas, ut.nombre_unidad_tema, a.actividad;
     ";
 
     $result = mysqli_query($conexion, $query);
@@ -43,6 +56,20 @@ if (isset($_GET['codigo'])) {
 <h2>Reporte de Unidades, Actividades y Recursos</h2>
 
 <?php if (isset($data) && !empty($data)): ?>
+    <!-- Formulario para seleccionar la semana -->
+    <form method="post" action="">
+        <label for="semana">Seleccionar Semana:</label>
+        <select name="semana">
+            <?php foreach ($semanas as $semana): ?>
+                <option value="<?php echo $semana['semanas']; ?>" <?php echo ($semanaSeleccionada == $semana['semanas']) ? 'selected' : ''; ?>>
+                    <?php echo $semana['semanas']; ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <input type="submit" name="submit" value="Actualizar">
+    </form>
+
+    <!-- Tabla de resultados -->
     <table>
         <thead>
         <tr>
@@ -58,9 +85,6 @@ if (isset($_GET['codigo'])) {
         <tbody>
         <?php
         $prevUnidad = null;
-        $totalHoras = 0;
-        $totalHorasPorComponente = array();
-
         foreach ($data as $row):
             echo '<tr>';
             if ($prevUnidad !== $row['nombre_unidad_tema']) {
@@ -77,41 +101,10 @@ if (isset($_GET['codigo'])) {
             echo '<td>' . $row['componente'] . '</td>';
             echo '</tr>';
             $prevUnidad = $row['nombre_unidad_tema'];
-
-            // Calcular total de horas
-            $totalHoras += strtotime($row['duracion_actividad']);
-            
-            // Calcular total de horas por componente
-            if (!isset($totalHorasPorComponente[$row['componente']])) {
-                $totalHorasPorComponente[$row['componente']] = 0;
-            }
-            $totalHorasPorComponente[$row['componente']] += strtotime($row['duracion_actividad']);
         endforeach;
         ?>
         </tbody>
     </table>
-
-    <h3>Total de horas por componente:</h3>
-    <table>
-        <thead>
-        <tr>
-            <th>Componente</th>
-            <th>Total de Horas</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        foreach ($totalHorasPorComponente as $componente => $totalHorasComponente):
-            echo '<tr>';
-            echo '<td>' . $componente . '</td>';
-            echo '<td>' . date('H:i', $totalHorasComponente) . '</td>';
-            echo '</tr>';
-        endforeach;
-        ?>
-        </tbody>
-    </table>
-
-    <p>Total de horas: <?php echo date('H:i', $totalHoras); ?></p>
 
 <?php else: ?>
     <p>No hay datos disponibles para mostrar.</p>

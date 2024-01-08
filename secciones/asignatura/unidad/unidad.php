@@ -24,12 +24,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recibir datos del formulario
     $nombreUnidadTema = $_POST['nombre_unidad_tema'];
     $tema = $_POST['tema'];
+    $semanas = $_POST['semanas']; // Nuevo campo semanas
     $fecha = $_POST['fecha'];
     $codigoAsignatura = $_POST['codigo_asignatura'];
 
     // Consulta SQL para insertar los datos en la tabla unidad_tema
-    $query = "INSERT INTO unidad_tema (nombre_unidad_tema, tema, fecha, codigo_asignatura) 
-              VALUES ('$nombreUnidadTema', '$tema', '$fecha', '$codigoAsignatura')";
+    $query = "INSERT INTO unidad_tema (nombre_unidad_tema, tema, semanas, fecha, codigo_asignatura) 
+              VALUES ('$nombreUnidadTema', '$tema', '$semanas', '$fecha', '$codigoAsignatura')";
 
     // Ejecutar la consulta
     $result = mysqli_query($conexion, $query);
@@ -97,7 +98,7 @@ mysqli_close($conexion);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario Unidad Tema</title>
-    <link rel="stylesheet" href="../../../css/estilo_unidad.css">
+    <link rel="stylesheet" href="../../../css/estilo_unidad1.css">
 </head>
 <body>
 
@@ -105,11 +106,39 @@ mysqli_close($conexion);
 
     <h2 class="Title">Formulario Unidad Tema</h2>
     <form action="unidad.php" method="post">
-        <label for="nombre_unidad_tema">Nombre de la Unidad/Tema:</label>
-        <input type="text" name="nombre_unidad_tema" required><br>
 
-        <label for="tema">Tema:</label>
-        <textarea name="tema" rows="4" required></textarea><br>
+    <select name="nombre_unidad_tema" class="styled-select" required>
+        <option value="Unidad 1">Unidad 1</option>
+        <option value="Unidad 2">Unidad 2</option>
+        <option value="Unidad 3">Unidad 3</option>
+        <option value="Unidad 4">Unidad 4</option>
+        <option value="Unidad 5">Unidad 5</option>
+    </select><br>
+
+    <select name="tema" class="styled-select" required>
+        <option value="Aritmética Básica">Aritmética Básica</option>
+        <option value="Álgebra Elemental">Álgebra Elemental</option>
+        <option value="Geometría Básica">Geometría Básica</option>
+        <option value="Probabilidades y Estadísticas">Probabilidades y Estadísticas</option>
+        <option value="Números y Operaciones">Números y Operaciones</option>
+        <!-- Puedes agregar más opciones según sea necesario -->
+    </select><br>
+
+    <?php
+// Genera las opciones del select para las semanas
+$options = '';
+for ($semana = 1; $semana <= 16; $semana++) {
+    $valor = 'Semana ' . $semana;
+    $nombre = 'Semana ' . $semana;
+    $options .= "<option value=\"$valor\">$nombre</option>";
+}
+?>
+
+<!-- HTML para el select de semanas -->
+<select name="semanas" class="styled-select" required>
+    <?php echo $options; ?>
+</select><br>
+
 
         <label for="fecha">Fecha:</label>
         <input type="date" name="fecha" required><br>
@@ -125,33 +154,44 @@ mysqli_close($conexion);
     <table border="1">
         <thead>
             <tr>
-                
                 <th>Nombre</th>
                 <th>Tema</th>
+                <th>Semana</th>
                 <th>Fecha</th>
-                <th>Día</th>
                 <th class="actions-column">Acciones</th>
             </tr>
         </thead>
         <tbody>
-      
             <?php
             // Establecer el idioma a español
             setlocale(LC_TIME, 'es_ES.UTF-8', 'es_ES', 'esp');
 
+            $prevUnidad = null; // Variable para almacenar la unidad anterior
+
             foreach ($unidades as $unidad):
                 ?>
                 <tr>
-                    <td><?php echo $unidad['nombre_unidad_tema']; ?></td>
+                    <?php if ($prevUnidad !== $unidad['nombre_unidad_tema']): ?>
+                        <!-- Si la unidad es diferente a la anterior, mostrarla y combinar las celdas -->
+                        <td rowspan="<?php echo count(array_filter($unidades, function($item) use ($unidad) {
+                            return $item['nombre_unidad_tema'] === $unidad['nombre_unidad_tema'];
+                        })); ?>">
+                            <?php echo $unidad['nombre_unidad_tema']; ?>
+                        </td>
+                    <?php endif; ?>
                     <td><?php echo $unidad['tema']; ?></td>
+                    <td><?php echo $unidad['semanas']; ?></td>
                     <td><?php echo $unidad['fecha']; ?></td>
-                    <td><?php echo utf8_encode(ucfirst(strftime('%A', strtotime($unidad['fecha'])))); ?></td>
+    
                     <td class="actions-column">
                         <a href="editar.php?id=<?php echo $unidad['id_unidad_tema']; ?>&codigo=<?php echo $codigoAsignatura; ?>" class="btn-editar">Editar</a>
                         <a href="?accion=borrar&id=<?php echo $unidad['id_unidad_tema']; ?>&codigo=<?php echo $codigoAsignatura; ?>" class="btn-borrar">Borrar</a>
                     </td>
                 </tr>
-            <?php endforeach; ?>
+                <?php
+                $prevUnidad = $unidad['nombre_unidad_tema']; // Actualizar la unidad anterior
+            endforeach;
+            ?>
         </tbody>
     </table>
 <?php else: ?>

@@ -49,7 +49,7 @@ if (isset($_GET['codigo'])) {
     $codigoAsignatura = $_GET['codigo'];
 
     // Consulta para obtener las actividades de la asignatura
-    $queryActividades = "SELECT actividad.id_actividad, actividad.actividad, actividad.duracion_actividad, actividad.descripcion_actividad, unidad_tema.nombre_unidad_tema, unidad_tema.tema, componente_aprendizaje.componente, actividad.recurso
+    $queryActividades = "SELECT actividad.id_actividad, actividad.actividad, actividad.duracion_actividad, actividad.descripcion_actividad, unidad_tema.nombre_unidad_tema, unidad_tema.tema, componente_aprendizaje.componente, actividad.recurso, actividad.fecha_inicio_realizacion, actividad.fecha_fin_realizacion
         FROM actividad
         INNER JOIN unidad_tema ON actividad.id_unidad_tema = unidad_tema.id_unidad_tema
         INNER JOIN componente_aprendizaje ON actividad.id_componente = componente_aprendizaje.id_componente
@@ -83,11 +83,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $descripcion_actividad = $_POST['descripcion_actividad'];
     $id_unidad_tema = $_POST['id_unidad_tema'];
     $id_componente = $_POST['id_componente'];
-    $recurso = $_POST['descripcion_recurso']; // Nuevo campo
+    $recurso = $_POST['descripcion_recurso'];
+    $fecha_inicio_realizacion = $_POST['fecha_inicio_realizacion'];
+    $fecha_fin_realizacion = $_POST['fecha_fin_realizacion'];
 
     // Consulta SQL para insertar los datos en la tabla actividad
-    $query = "INSERT INTO actividad (actividad, duracion_actividad, descripcion_actividad, id_unidad_tema, id_componente, recurso) 
-              VALUES ('$actividad', '$duracion_actividad', '$descripcion_actividad', '$id_unidad_tema', '$id_componente', '$recurso')";
+    $query = "INSERT INTO actividad (actividad, duracion_actividad, descripcion_actividad, id_unidad_tema, id_componente, recurso, fecha_inicio_realizacion, fecha_fin_realizacion) 
+              VALUES ('$actividad', '$duracion_actividad', '$descripcion_actividad', '$id_unidad_tema', '$id_componente', '$recurso', '$fecha_inicio_realizacion', '$fecha_fin_realizacion')";
               
     // Ejecutar la consulta
     $result = mysqli_query($conexion, $query);
@@ -110,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Actividad</title>
-    <link rel="stylesheet" href="../../../css/estilo_actividad2.css">
+    <link rel="stylesheet" href="../../../css/estilo_actividad3.css">
 </head>
 <body>
 
@@ -121,6 +123,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Agrega aquí campos adicionales según tus necesidades -->
     <label for="actividad">Actividad:</label>
     <input type="text" name="actividad" required><br>
+
+    <label for="fecha_inicio_realizacion">Fecha Inicio Realización:</label>
+    <input type="date" name="fecha_inicio_realizacion" required><br>
+
+    <label for="fecha_fin_realizacion">Fecha Fin Realización:</label>
+    <input type="date" name="fecha_fin_realizacion" required><br>
 
     <label for="duracion_actividad">Duración de la Actividad:</label>
     <input type="time" name="duracion_actividad" required><br>
@@ -167,7 +175,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <option value="Presentaciones en PowerPoint">Presentaciones en PowerPoint</option>
         <option value="Teams/Zoom">Teams/Zoom</option>
     </select><br>
-
     
     <br>
     <input type="submit" value="Guardar">
@@ -186,6 +193,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <th>Descripción</th>
             <th>Componente</th>
             <th>Recurso</th>
+            <th>Fecha Inicio Realización</th>
+            <th>Fecha Fin Realización</th>
             <th>Opciones</th>
         </tr>
     </thead>
@@ -211,6 +220,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <td><?php echo $actividad['descripcion_actividad']; ?></td>
                 <td><?php echo $actividad['componente']; ?></td>
                 <td><?php echo $actividad['recurso']; ?></td>
+                <td><?php echo $actividad['fecha_inicio_realizacion']; ?></td>
+                <td><?php echo $actividad['fecha_fin_realizacion']; ?></td>
                 <td class="actions-column">
                     <a href="editar.php?id=<?php echo $actividad['id_actividad']; ?>&codigo=<?php echo $codigoAsignatura; ?>" class="btn-editar">Editar</a>
                     <a href="?accion=borrar&id=<?php echo $actividad['id_actividad']; ?>&codigo=<?php echo $codigoAsignatura; ?>" class="btn-borrar">Borrar</a>

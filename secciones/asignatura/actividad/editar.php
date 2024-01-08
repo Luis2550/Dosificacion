@@ -51,6 +51,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $actividad = $_POST['actividad'];
     $duracion_actividad = $_POST['duracion_actividad'];
     $descripcion_actividad = $_POST['descripcion_actividad'];
+    $fecha_inicio = $_POST['fecha_inicio_realizacion'];
+    $fecha_fin = $_POST['fecha_fin_realizacion'];
     $id_unidad_tema = $_POST['id_unidad_tema'];
     $id_componente = $_POST['id_componente'];
     $recurso = $_POST['descripcion_recurso']; // Nuevo campo
@@ -59,7 +61,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $queryActualizar = "UPDATE actividad 
                         SET actividad = '$actividad', duracion_actividad = '$duracion_actividad', 
                         descripcion_actividad = '$descripcion_actividad', id_unidad_tema = '$id_unidad_tema', 
-                        id_componente = '$id_componente', recurso = '$recurso' 
+                        id_componente = '$id_componente', recurso = '$recurso', fecha_inicio_realizacion = '$fecha_inicio',
+                        fecha_fin_realizacion = '$fecha_fin'
                         WHERE id_actividad = '$idActividadEditar'";
     
     // Ejecutar la consulta de actualización
@@ -76,7 +79,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -92,6 +94,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Campos adicionales según tus necesidades -->
     <label for="actividad">Actividad:</label>
     <input type="text" name="actividad" value="<?php echo $actividadEditar['actividad']; ?>" required><br>
+
+    <label for="fecha_inicio_realizacion">Fecha Inicio Realización:</label>
+    <input type="date" name="fecha_inicio_realizacion" value="<?php echo $actividadEditar['fecha_inicio_realizacion']; ?>" required><br>
+
+    <label for="fecha_fin_realizacion">Fecha Fin Realización:</label>
+    <input type="date" name="fecha_fin_realizacion" value="<?php echo $actividadEditar['fecha_fin_realizacion']; ?>" required><br>
 
     <label for="duracion_actividad">Duración de la Actividad:</label>
     <input type="time" name="duracion_actividad" value="<?php echo $actividadEditar['duracion_actividad']; ?>" required><br>
@@ -138,3 +146,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </body>
 </html>
+

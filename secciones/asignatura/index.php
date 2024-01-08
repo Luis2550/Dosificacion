@@ -41,6 +41,7 @@ mysqli_close($conexion);
             <li><b>Fecha de Elaboración:</b> <?php echo $asignatura['fecha_elaboracion']; ?></li>
             <li><b>Duración:</b> <?php echo $asignatura['duracion_asignatura']; ?></li>
             <li><b>Metodología de Enseñanza:</b> <?php echo $asignatura['metodologia_ensenanza']; ?></li>
+            <li><b>Créditos:</b> <?php echo $asignatura['creditos']; ?> 144 horas</li>
         </ul>
     <?php else: ?>
         <p>No se proporcionó un código de asignatura válido.</p>
