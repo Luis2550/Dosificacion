@@ -5,6 +5,8 @@ include("../../../bd.php");
 $codigoAsignatura = '';
 $idActividadEditar = '';
 
+$fechaActual = date("Y-m-d");
+
 // Verifica si se ha proporcionado el parámetro 'codigo' en la URL
 if (isset($_GET['codigo'])) {
     // Obtiene el valor del parámetro 'codigo'
@@ -85,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Actividad</title>
-    <link rel="stylesheet" href="../../../css/estilo_actividad2.css">
+    <link rel="stylesheet" href="../../../css/estilo_actividad3.css">
 </head>
 <body>
 
@@ -96,10 +98,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <input type="text" name="actividad" value="<?php echo $actividadEditar['actividad']; ?>" required><br>
 
     <label for="fecha_inicio_realizacion">Fecha Inicio Realización:</label>
-    <input type="date" name="fecha_inicio_realizacion" value="<?php echo $actividadEditar['fecha_inicio_realizacion']; ?>" required><br>
+    <input type="date" name="fecha_inicio_realizacion" min="<?php echo $fechaActual; ?>" value="<?php echo $actividadEditar['fecha_inicio_realizacion']; ?>" required><br>
 
     <label for="fecha_fin_realizacion">Fecha Fin Realización:</label>
-    <input type="date" name="fecha_fin_realizacion" value="<?php echo $actividadEditar['fecha_fin_realizacion']; ?>" required><br>
+    <input type="date" name="fecha_fin_realizacion" min="<?php echo $fechaActual; ?>" value="<?php echo $actividadEditar['fecha_fin_realizacion']; ?>" required><br>
 
     <label for="duracion_actividad">Duración de la Actividad:</label>
     <input type="time" name="duracion_actividad" value="<?php echo $actividadEditar['duracion_actividad']; ?>" required><br>

@@ -1,6 +1,8 @@
 <?php
 include("../../../bd.php");
 
+$fechaActual = date("Y-m-d");
+
 // Inicializar variables
 $codigoAsignatura = '';
 
@@ -125,10 +127,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <input type="text" name="actividad" required><br>
 
     <label for="fecha_inicio_realizacion">Fecha Inicio Realización:</label>
-    <input type="date" name="fecha_inicio_realizacion" required><br>
+    <input type="date" name="fecha_inicio_realizacion" min="<?php echo $fechaActual; ?>" required><br>
 
     <label for="fecha_fin_realizacion">Fecha Fin Realización:</label>
-    <input type="date" name="fecha_fin_realizacion" required><br>
+    <input type="date" name="fecha_fin_realizacion" min="<?php echo $fechaActual; ?>"  required><br>
 
     <label for="duracion_actividad">Duración de la Actividad:</label>
     <input type="time" name="duracion_actividad" required><br>

@@ -24,6 +24,8 @@ if (isset($_GET['codigo'])) {
             a.descripcion_actividad,
             a.duracion_actividad,
             a.recurso,
+            a.fecha_inicio_realizacion,
+            a.fecha_fin_realizacion,
             c.componente
         FROM unidad_tema ut
         LEFT JOIN actividad a ON ut.id_unidad_tema = a.id_unidad_tema
@@ -49,9 +51,18 @@ if (isset($_GET['codigo'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporte</title>
-    <link rel="stylesheet" href="../../css/estilo_reporte.css">
+    <link rel="stylesheet" href="../../css/estilo_reporte2.css">
 </head>
 <body>
+
+<a
+        name=""
+        id=""
+        class="btn btn-primary"
+        href="http://localhost/dosificacion/"
+        role="button"
+        >Regresar</a
+    >
 
 <h2>Reporte de Unidades, Actividades y Recursos</h2>
 
@@ -70,7 +81,7 @@ if (isset($_GET['codigo'])) {
     </form>
 
     <!-- Tabla de resultados -->
-    <table>
+    <table class="tabla1">
         <thead>
         <tr>
             <th>Unidad/Tema</th>
@@ -78,6 +89,8 @@ if (isset($_GET['codigo'])) {
             <th>Actividad</th>
             <th>Descripción de la Actividad</th>
             <th>Duración de la Actividad</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
             <th>Recurso</th>
             <th>Componente</th>
         </tr>
@@ -99,6 +112,8 @@ if (isset($_GET['codigo'])) {
             echo '<td>' . $row['actividad'] . '</td>';
             echo '<td>' . $row['descripcion_actividad'] . '</td>';
             echo '<td>' . $row['duracion_actividad'] . '</td>';
+            echo '<td>' . $row['fecha_inicio_realizacion'] . '</td>';
+            echo '<td>' . $row['fecha_fin_realizacion'] . '</td>';
             echo '<td>' . $row['recurso'] . '</td>';
             echo '<td>' . $row['componente'] . '</td>';
             echo '</tr>';
@@ -118,7 +133,7 @@ if (isset($_GET['codigo'])) {
 
     <!-- Cuadro de total de horas por componente -->
     <h3>Total de horas por componente:</h3>
-    <table>
+    <table class="tabla2">
         <thead>
         <tr>
             <th>Componente</th>
